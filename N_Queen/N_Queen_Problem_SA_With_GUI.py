@@ -1,15 +1,16 @@
 import numpy as np
 import copy
+from N_Queen.N_Queen_Drawer import draw_the_queen
 
 
 class SAHistory:
 
-    def __init__(self, checker_board, comment):
-        self.queen_checkerboard = checker_board
-        self.comment = comment
+    def __init__(self, queen, com):
+        self.queen = queen
+        self.comment = com
 
     def __repr__(self):
-        return str(self.queen_checkerboard) + '\n' + 'Strategy -> ' + self.comment + '\n'
+        return str(self.queen.checker_board) + '\n'+str(self.queen.checker_board_fitness)+ '\n' + 'Fitness->' + str(self.queen.own_fitness) + '\nStrategy -> ' + self.comment + '\n'
 
 
 class N_Queen:
@@ -43,17 +44,9 @@ class N_Queen:
                 self.checker_board[min_index][column] = 1
 
     def initialize_checkerboard(self):
-        # self.checker_board[4][0] = 8
-        # self.checker_board[5][1] = 8
-        # self.checker_board[6][2] = 8
-        # self.checker_board[3][3] = 8
-        # self.checker_board[4][4] = 8
-        # self.checker_board[5][5] = 8
-        # self.checker_board[6][6] = 8
-        # self.checker_board[5][7] = 8
         random_index = [np.random.randint(self.queen_no) for i in range(self.queen_no)]
-        for i in range(self.queen_no):
-            self.checker_board[random_index[i]][i] = 1
+        for j in range(self.queen_no):
+            self.checker_board[random_index[j]][j] = 1
 
     def calculate_checker_board_fitness(self):
         for row in range(self.queen_no):
@@ -112,41 +105,44 @@ class N_Queen:
         return str(self.checker_board)
 
 
-def simulated_anneling(queen):
-    global simulation_history
+def simulated_annealing(queen):
+    global simulation_history, comment
     current_queen = queen
     chance = 3
     while True:
-
+        simulation_history.append(SAHistory(copy.deepcopy(current_queen), comment))
+        # print(current_queen.own_fitness)
         if current_queen.own_fitness == 0:
-            simulation_history.append(SAHistory(current_queen.checker_board, 'Goal CheckerBoard Found'))
-            return current_queen
+            return
 
         neighbour_queen = N_Queen(None, current_queen)
 
         if current_queen.own_fitness < neighbour_queen.own_fitness:
             queen = N_Queen(8)
-            simulation_history.append(SAHistory(neighbour_queen.checker_board, 'Local Minimum Found, so CheckerBoard is Heated and New CheckerBoard Produced'))
-            return simulated_anneling(queen)
+            comment = 'Local Minimum Found, so CheckerBoard is Heated and New CheckerBoard Produced'
+            return simulated_annealing(queen)
         if current_queen.own_fitness == neighbour_queen.own_fitness:
-            simulation_history.append(SAHistory(current_queen.checker_board, 'Shoulder or Flat Local Minimum Found. Neighbour  It will get 3 chances. Neighbourhood is Chosen'))
+            comment = 'Shoulder or Flat Local Minimum Found. Neighbour  It will get 3 chances. Neighbourhood is Chosen'
             chance -= 1
         if chance == 0:
             break
         current_queen = neighbour_queen
         if chance == 3:
-            simulation_history.append(SAHistory(current_queen.checker_board, 'Neighbourhood CheckerBoard is Chosen'))
-        # print(current_queen.own_fitness, current_queen.checker_board_min_fitness)
+            comment = 'Neighbourhood CheckerBoard is Chosen'
+            pass
     if chance == 0:
         queen = N_Queen(8)
-        simulation_history.append(SAHistory(queen.checker_board, 'After The Given 3 Chances, CheckerBoard is Heated and New CheckerBoard Produced'))
-        return simulated_anneling(queen)
+        comment = 'After The Given 3 Chances, CheckerBoard is Heated and New CheckerBoard Produced'
+        return simulated_annealing(queen)
 
 
 simulation_history = list()
 my_queen = N_Queen(8)
-simulation_history.append(SAHistory(my_queen.checker_board, 'Starting CheckerBoard'))
-simulated_anneling(my_queen)
+comment = 'Starting CheckerBoard'
+simulated_annealing(my_queen)
 for i in range(len(simulation_history)):
     print(simulation_history[i])
 print('iteration -> '+str(len(simulation_history)))
+
+for i in range(len(simulation_history)):
+    draw_the_queen(simulation_history[i].queen.checker_board, str(simulation_history[i].queen.own_fitness)+simulation_history[i].comment, i)
