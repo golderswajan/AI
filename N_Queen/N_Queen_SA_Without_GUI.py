@@ -9,7 +9,7 @@ class SAHistory:
         self.comment = com
 
     def __repr__(self):
-        return str(self.queen.checker_board) + '\n'+str(self.queen.checker_board_fitness)+ '\n' + 'Fitness->' + str(self.queen.own_fitness) + '\nStrategy -> ' + self.comment + '\n'
+        return str(self.queen.checker_board) + '\n'+str(self.queen.checker_board_fitness)+ '\n' + 'Attack->' + str(self.queen.own_fitness) + '\n' + 'Min Attack->' + str(self.queen.checker_board_min_fitness) + '\nStrategy -> ' + self.comment + '\n'
 
 
 class N_Queen:

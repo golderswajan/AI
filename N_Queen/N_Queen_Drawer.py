@@ -26,7 +26,7 @@ def draw_the_queen(queen_matrix,comment, no):
     pygame.init()
     WINDOW_SIZE = [500, 500]
     screen = pygame.display.set_mode(WINDOW_SIZE)
-    pygame.display.set_caption("No->" + str(no+1)+" fitness->" + comment)
+    pygame.display.set_caption("No->" + str(no+1)+" Attack->" + comment)
 
     done = False
 
