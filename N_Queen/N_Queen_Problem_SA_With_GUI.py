@@ -145,4 +145,4 @@ for i in range(len(simulation_history)):
 print('iteration -> '+str(len(simulation_history)))
 
 for i in range(len(simulation_history)):
-    draw_the_queen(simulation_history[i].queen.checker_board, str(simulation_history[i].queen.own_fitness)+simulation_history[i].comment, i)
+    draw_the_queen(simulation_history[i].queen.checker_board, str(simulation_history[i].queen.own_fitness)+" "+simulation_history[i].comment, i)
